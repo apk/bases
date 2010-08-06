@@ -1,15 +1,16 @@
 #!/bin/sh
 set -ex
-make
+bindir=.bin
+make BINDIR=$bindir
 
 teste64 () {
     echo "$1"
-    res="`/bin/echo -n "$1" | bin/e64`" #` <- Comment for happy emacs mode
+    res="`/bin/echo -n "$1" | $bindir/e64`" #` <- Comment for happy emacs mode
     if test "$2" = "$res"; then
-	res="`bin/e64 -s"$1"`" #` <- Comment for happy emacs mode
+	res="`$bindir/e64 -s"$1"`" #` <- Comment for happy emacs mode
 	if test "$2" = "$res"; then
 	    /bin/echo -n "$1" >.tmp
-	    res="`bin/e64 .tmp`" #` <- Comment for happy emacs mode
+	    res="`$bindir/e64 .tmp`" #` <- Comment for happy emacs mode
 	    if test "$2" = "$res"; then
 		rm -f .tmp
 		true
