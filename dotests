@@ -1,0 +1,25 @@
+#!/bin/sh
+set -ex
+make
+
+teste64 () {
+    echo "$1"
+    res="`/bin/echo -n "$1" | bin/e64`" #` <- Comment for happy emacs mode
+    if test "$2" = "$res"; then
+	true
+    else
+	echo "'$res' isn't '$2' on '$1'"
+	false
+    fi
+}
+
+
+teste64 "sure."  "c3VyZS4="
+teste64 "sure"   "c3VyZQ=="
+teste64 "sur"    "c3Vy"
+teste64 "su"     "c3U="
+
+teste64 "leasure." "bGVhc3VyZS4="
+teste64 "easure." "ZWFzdXJlLg=="
+teste64 "asure." "YXN1cmUu"
+teste64 "sure." "c3VyZS4="
