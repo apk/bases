@@ -90,12 +90,13 @@ void process (struct iop *io) {
 
 int main (int argc, char **argv) {
 	static char dummy [] = "<stdin>";
-	struct iop IO = { 0, dummy, dummy, dummy };
 	int donesome = 0;
+	int donestdin = 0;
 	int i;
 	for (i = 1; i < argc; i ++) {
 		char *arg = argv [i];
 		if (arg [0] != '-') {
+			struct iop IO;
 			int fd = open (arg, 0);
 			if (fd == -1) {
 				fprintf (stderr, "Can't open %s\n", arg);
@@ -111,11 +112,20 @@ int main (int argc, char **argv) {
 		}
 		if (arg [1] == 0) {
 			/* stdin */
-			fprintf (stderr, "Can't do explicit stdin yet\n"); /* XXX */
+			struct iop IO = { 0, dummy, dummy, dummy };
+			if (donestdin) {
+				fprintf (stderr, "Can do stdin once only\n");
+				exit (1);
+			}
+			process (&IO);
+			donesome = 1;
+			donestdin = 1;
+			continue;
 			exit (1);
 		}
 		if (arg [1] == 's') {
 			/* String */
+			struct iop IO;
 			IO.ibuf = (arg += 2);
 			IO.ifn = arg;
 			IO.fd = -1;
@@ -129,6 +139,7 @@ int main (int argc, char **argv) {
 		exit (1);
 	}
 	if (!donesome) {
+		struct iop IO = { 0, dummy, dummy, dummy };
 		process (&IO);
 	}
 	return 0;
