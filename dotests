@@ -6,9 +6,24 @@ teste64 () {
     echo "$1"
     res="`/bin/echo -n "$1" | bin/e64`" #` <- Comment for happy emacs mode
     if test "$2" = "$res"; then
-	true
+	res="`bin/e64 -s"$1"`" #` <- Comment for happy emacs mode
+	if test "$2" = "$res"; then
+	    /bin/echo -n "$1" >.tmp
+	    res="`bin/e64 .tmp`" #` <- Comment for happy emacs mode
+	    if test "$2" = "$res"; then
+		rm -f .tmp
+		true
+	    else
+		rm -f .tmp
+		echo "'$res' isn't '$2' on '$1' (file)"
+		false
+	    fi
+	else
+	    echo "'$res' isn't '$2' on '$1' (-s)"
+	    false
+	fi
     else
-	echo "'$res' isn't '$2' on '$1'"
+	echo "'$res' isn't '$2' on '$1' (stdin)"
 	false
     fi
 }

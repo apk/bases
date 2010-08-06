@@ -1,13 +1,36 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 struct iop {
-	char buf [1 < 14];
-	int pos;
-	int len;
+	int fd;
+	char *ifn;
+	char *ibuf;
+	char *iend;
+	char ibuffer [1 << 14];
 };
 
-#define GETC(io) getchar()
+#define GETC(io) ((io) ? ((io)->ibuf < (io)->iend		      \
+			  ? *(io)->ibuf ++ : readbuf (io))	      \
+		  : getchar ())
 #define PUTC(io,c) putchar(c)
+
+int readbuf (struct iop *io) {
+	int r;
+	if (io->ibuf <= io->iend) { /* (Mostly) redundant */
+		if (io->fd == -1) return EOF; /* For strings */
+		r = read (io->fd, io->ibuffer, sizeof (io->ibuffer));
+		if (r < 0) {
+			perror ("read"); /* XXX */
+			exit (1);
+		}
+		if (r == 0) {
+			return EOF;
+		}
+		io->ibuf = io->ibuffer;
+		io->iend = io->ibuffer + r;
+	}
+	return *io->ibuf ++;
+}
 
 static void out (struct iop *io, int c) {
 	c &= 63;
@@ -25,10 +48,17 @@ static void out (struct iop *io, int c) {
 }
 
 void process (struct iop *io) {
+	int cnt = 0;
+	/* XXX if(debug)? fprintf (stderr, "Doing %s\n", io->ifn); */
+	/*
+	 * XXX Linebreaks at other than 64; at newlines; other separators,
+	 * XXX no padding...
+	 */
 	while (1) {
 		int d;
 		int c = GETC (io);
 		if (c == EOF) break;
+		cnt ++;
 		out (io, c >> 2);
 		c <<= 4;
 		d = GETC (io);
@@ -48,12 +78,59 @@ void process (struct iop *io) {
 		}
 		out (io, d | (3 & (c >> 6)));
 		out (io, c);
+		if (cnt == 16) {
+			PUTC (io, '\n');
+			cnt = 0;
+		}
 	}
-	PUTC (io, '\n');
+	if (cnt > 0) {
+		PUTC (io, '\n');
+	}
 }
 
 int main (int argc, char **argv) {
-	process (0);
+	static char dummy [] = "<stdin>";
+	struct iop IO = { 0, dummy, dummy, dummy };
+	int donesome = 0;
+	int i;
+	for (i = 1; i < argc; i ++) {
+		char *arg = argv [i];
+		if (arg [0] != '-') {
+			int fd = open (arg, 0);
+			if (fd == -1) {
+				fprintf (stderr, "Can't open %s\n", arg);
+				exit (1);
+			}
+			IO.ibuf = dummy;
+			IO.iend = dummy;
+			IO.fd = fd;
+			IO.ifn = arg;
+			process (&IO);
+			donesome = 1;
+			continue;
+		}
+		if (arg [1] == 0) {
+			/* stdin */
+			fprintf (stderr, "Can't do explicit stdin yet\n"); /* XXX */
+			exit (1);
+		}
+		if (arg [1] == 's') {
+			/* String */
+			IO.ibuf = (arg += 2);
+			IO.ifn = arg;
+			IO.fd = -1;
+			while (*arg) arg ++;
+			IO.iend = arg;
+			process (&IO);
+			donesome = 1;
+			continue;
+		}
+		fprintf (stderr, "Bad option %s\n", arg);
+		exit (1);
+	}
+	if (!donesome) {
+		process (&IO);
+	}
 	return 0;
 }
 
