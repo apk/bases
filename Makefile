@@ -13,3 +13,9 @@ all :: $(BINDIR)/rot13
 $(BINDIR)/rot13 : rot13.c common.c
 	mkdir -p $(BINDIR)
 	gcc -o $(BINDIR)/rot13 rot13.c
+
+all :: $(BINDIR)/hex2bin
+
+$(BINDIR)/hex2bin : hex2bin.c common.c
+	mkdir -p $(BINDIR)
+	gcc -o $(BINDIR)/hex2bin hex2bin.c
