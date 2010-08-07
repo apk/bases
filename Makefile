@@ -19,3 +19,9 @@ all :: $(BINDIR)/hex2bin
 $(BINDIR)/hex2bin : hex2bin.c common.c
 	mkdir -p $(BINDIR)
 	gcc -o $(BINDIR)/hex2bin hex2bin.c
+
+all :: $(BINDIR)/bin2hex
+
+$(BINDIR)/bin2hex : bin2hex.c common.c
+	mkdir -p $(BINDIR)
+	gcc -o $(BINDIR)/bin2hex bin2hex.c
