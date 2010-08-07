@@ -32,7 +32,15 @@ int readbuf (struct iop *io) {
 	return *io->ibuf ++;
 }
 
-static void process (struct iop *io);
+#ifdef OPTS
+static int opts (char *opt);
+#endif
+
+#ifdef OPT_LAZY
+static int lazy = 0;
+#endif
+
+void process (struct iop *io);
 
 int main (int argc, char **argv) {
 	static char dummy [] = "<stdin>";
@@ -81,6 +89,17 @@ int main (int argc, char **argv) {
 			donesome = 1;
 			continue;
 		}
+#ifdef OPT_LAZY
+		if (!strcmp (arg + 1, "r")) {
+			lazy = 1;
+			continue;
+		}
+#endif
+#ifdef OPTS
+		if (opts (arg + 1)) {
+			continue;
+		}
+#endif
 		fprintf (stderr, "Bad option %s\n", arg);
 		exit (1);
 	}
