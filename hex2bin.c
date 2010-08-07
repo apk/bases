@@ -1,3 +1,5 @@
+#define OPT_LAZY
+
 #include "common.c"
 
 int hexof (int c) {
@@ -24,21 +26,32 @@ int hexof (int c) {
 
 void process (struct iop *io) {
 	while (1) {
-		int c = GETC (io);
-		if (c == EOF) break;
-		c = hexof (c);
+		int c;
+		int h = GETC (io);
+		if (h == EOF) break;
+		c = hexof (h);
 		if (c >= 0) {
-			int d = GETC (io);
-			if (d == EOF) {
-				putchar (c);
+			int d;
+			h = GETC (io);
+			if (h == EOF) {
+				PUTC (io, c);
 				break;
 			}
-			d = hexof (d);
+			d = hexof (h);
 			if (d >= 0) {
-				putchar (16 * c + d);
+				PUTC (io, 16 * c + d);
+				continue;
 			} else {
-				putchar (c);
+				PUTC (io, c);
 			}
 		}
+		/* Catch char in h and process */
+		if (h == ' ' || h == '\n') continue;
+		if (!lazy) {
+			fprintf (stderr, "Bad char in input '%s'\n",
+				 io->ifn);
+			exit (1);
+		}
+		PUTC (io, h);
 	}
 }
