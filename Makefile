@@ -7,3 +7,9 @@ all :: $(BINDIR)/e64
 $(BINDIR)/e64 : e64.c common.c
 	mkdir -p $(BINDIR)
 	gcc -o $(BINDIR)/e64 e64.c
+
+all :: $(BINDIR)/rot13
+
+$(BINDIR)/rot13 : rot13.c common.c
+	mkdir -p $(BINDIR)
+	gcc -o $(BINDIR)/rot13 rot13.c
