@@ -1,5 +1,20 @@
 #include "common.c"
 
+static void out (struct iop *io, int c) {
+	c &= 63;
+	if (c < 26) {
+		PUTC (io, 'A' + c);
+	} else if (c < 52) {
+		PUTC (io, 'a' - 26 + c);
+	} else if (c < 62) {
+		PUTC (io, '0' - 52 + c);
+	} else if (c < 63) {
+		PUTC (io, '+');
+	} else {
+		PUTC (io, '/');
+	}
+}
+
 void process (struct iop *io) {
 	int cnt = 0;
 	/* XXX if(debug)? fprintf (stderr, "Doing %s\n", io->ifn); */

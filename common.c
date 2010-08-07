@@ -32,21 +32,6 @@ int readbuf (struct iop *io) {
 	return *io->ibuf ++;
 }
 
-static void out (struct iop *io, int c) {
-	c &= 63;
-	if (c < 26) {
-		PUTC (io, 'A' + c);
-	} else if (c < 52) {
-		PUTC (io, 'a' - 26 + c);
-	} else if (c < 62) {
-		PUTC (io, '0' - 52 + c);
-	} else if (c < 63) {
-		PUTC (io, '+');
-	} else {
-		PUTC (io, '/');
-	}
-}
-
 static void process (struct iop *io);
 
 int main (int argc, char **argv) {
