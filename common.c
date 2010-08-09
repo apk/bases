@@ -30,11 +30,11 @@ void flushbuf () {
 		}
 		p += r;
 	}
+	ofill = 0;
 }
 
 void writebuf (int c) {
 	flushbuf ();
-	ofill = 0;
 	obuffer [ofill ++] = c;
 }
 
