@@ -105,15 +105,37 @@ int main (int argc, char **argv) {
 			exit (1);
 		}
 		for (p = arg + 1; *p; ) {
-			char *h;
 			switch (*p ++) {
+				char *h;
+				struct iop IO;
+				int fd;
+			case 'f':
+				if (i + 1 == argc) {
+					fprintf (stderr, "Missing arg for -f\n");
+					exit (1);
+				}
+				/* String */
+				h = argv [++ i];
+				fd = open (h, 0);
+				if (fd == -1) {
+					fprintf (stderr, "Can't open %s\n", h);
+					exit (1);
+				}
+				IO.ibuf = dummy;
+				IO.iend = dummy;
+				IO.fd = fd;
+				IO.ifn = arg;
+				process (&IO);
+				flushbuf ();
+				close (fd); /* XXX No check */
+				donesome = 1;
+				continue;
 			case 'c':
 				if (i + 1 == argc) {
 					fprintf (stderr, "Missing arg for -s\n");
 					exit (1);
 				}
 				/* String */
-				struct iop IO;
 				h = argv [++ i];
 				IO.ibuf = h;
 				IO.ifn = "-s";
