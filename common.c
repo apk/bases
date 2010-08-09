@@ -57,7 +57,7 @@ int readbuf (struct iop *io) {
 }
 
 #ifdef OPTS
-static int opts (char *opt);
+static char *opts (char *opt);
 #endif
 
 #ifdef OPT_LAZY
@@ -72,6 +72,7 @@ int main (int argc, char **argv) {
 	int donestdin = 0;
 	int i;
 	for (i = 1; i < argc; i ++) {
+		char *p;
 		char *arg = argv [i];
 		if (arg [0] != '-') {
 			struct iop IO;
@@ -103,32 +104,44 @@ int main (int argc, char **argv) {
 			continue;
 			exit (1);
 		}
-		if (arg [1] == 's') {
-			/* String */
-			struct iop IO;
-			IO.ibuf = (arg += 2);
-			IO.ifn = arg;
-			IO.fd = -1;
-			while (*arg) arg ++;
-			IO.iend = arg;
-			process (&IO);
-			flushbuf ();
-			donesome = 1;
-			continue;
-		}
+		for (p = arg + 1; *p; ) {
+			char *h;
+			switch (*p ++) {
+			case 'c':
+				if (i + 1 == argc) {
+					fprintf (stderr, "Missing arg for -s\n");
+					exit (1);
+				}
+				/* String */
+				struct iop IO;
+				h = argv [++ i];
+				IO.ibuf = h;
+				IO.ifn = "-s";
+				IO.fd = -1;
+				while (*h) h ++;
+				IO.iend = h;
+				process (&IO);
+				flushbuf ();
+				donesome = 1;
+				continue;
 #ifdef OPT_LAZY
-		if (!strcmp (arg + 1, "r")) {
-			lazy = 1;
-			continue;
-		}
+			case 'r':
+				lazy ++;
+				continue;
 #endif
+			default:
 #ifdef OPTS
-		if (opts (arg + 1)) {
-			continue;
-		}
+				h = opts (p - 1);
+				if (h) {
+					p = h;
+					continue;
+				}
 #endif
-		fprintf (stderr, "Bad option %s\n", arg);
-		exit (1);
+				fprintf (stderr, "Bad option %c in %s\n",
+					 p [-1], arg);
+				exit (1);
+			}
+		}
 	}
 	if (!donesome) {
 		struct iop IO = { 0, dummy, dummy, dummy };

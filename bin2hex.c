@@ -24,15 +24,12 @@ void process (struct iop *io) {
 	}
 }
 
-static int opts (char *opt) {
-	int l = atoi (opt);
-	if (l > 0) {
+char *opts (char *opt) {
+	char *r = 0;
+	long l = strtol (opt, &r, 10);
+	if (r > opt && l >= 0) {
 		lim = l;
-		return 1;
-	}
-	if (!strcmp (opt, "z")) {
-		lim = 0;
-		return 1;
+		return r;
 	}
 	return 0;
 }

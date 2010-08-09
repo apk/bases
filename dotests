@@ -24,7 +24,7 @@ teste64 () {
     echo "$1"
     res="`/bin/echo -n "$1" | $bindir/e64`" #` <- Comment for happy emacs mode
     if test "$2" = "$res"; then
-	res="`$bindir/e64 -s"$1"`" #` <- Comment for happy emacs mode
+	res="`$bindir/e64 -c "$1"`" #` <- Comment for happy emacs mode
 	if test "$2" = "$res"; then
 	    /bin/echo -n "$1" >.tmp
 	    res="`$bindir/e64 .tmp`" #` <- Comment for happy emacs mode
@@ -37,7 +37,7 @@ teste64 () {
 		false
 	    fi
 	else
-	    echo "'$res' isn't '$2' on '$1' (-s)"
+	    echo "'$res' isn't '$2' on '$1' (-c)"
 	    false
 	fi
     else
