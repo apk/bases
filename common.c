@@ -9,10 +9,34 @@ struct iop {
 	char ibuffer [1 << 14];
 };
 
+int ofd = 1;
+char obuffer [1 << 14];
+int ofill = 0;
+
 #define GETC(io) ((io) ? ((io)->ibuf < (io)->iend		      \
 			  ? *(io)->ibuf ++ : readbuf (io))	      \
 		  : getchar ())
-#define PUTC(io,c) putchar(c)
+#define PUTC(io,c) (ofill < sizeof (obuffer) ? obuffer [ofill ++] = (c) \
+		    : writebuf (c))
+#define FLUSH(io) (flushbuf ())
+
+void flushbuf () {
+	int p = 0;
+	while (p < ofill) {
+		int r = write (ofd, obuffer + p, ofill - p);
+		if (r <= 0) {
+			fprintf (stderr, "Output write error\n");
+			exit (1);
+		}
+		p += r;
+	}
+}
+
+void writebuf (int c) {
+	flushbuf ();
+	ofill = 0;
+	obuffer [ofill ++] = c;
+}
 
 int readbuf (struct iop *io) {
 	int r;
@@ -61,6 +85,7 @@ int main (int argc, char **argv) {
 			IO.fd = fd;
 			IO.ifn = arg;
 			process (&IO);
+			flushbuf ();
 			donesome = 1;
 			continue;
 		}
@@ -72,6 +97,7 @@ int main (int argc, char **argv) {
 				exit (1);
 			}
 			process (&IO);
+			flushbuf ();
 			donesome = 1;
 			donestdin = 1;
 			continue;
@@ -86,6 +112,7 @@ int main (int argc, char **argv) {
 			while (*arg) arg ++;
 			IO.iend = arg;
 			process (&IO);
+			flushbuf ();
 			donesome = 1;
 			continue;
 		}
@@ -106,6 +133,7 @@ int main (int argc, char **argv) {
 	if (!donesome) {
 		struct iop IO = { 0, dummy, dummy, dummy };
 		process (&IO);
+		flushbuf ();
 	}
 	return 0;
 }
