@@ -130,6 +130,21 @@ int main (int argc, char **argv) {
 				close (fd); /* XXX No check */
 				donesome = 1;
 				continue;
+			case 'o':
+				if (i + 1 == argc) {
+					fprintf (stderr, "Missing arg for -o\n");
+					exit (1);
+				}
+				/* String */
+				h = argv [++ i];
+				fd = creat (h, 0666);
+				if (fd == -1) {
+					fprintf (stderr, "Can't create %s\n", h);
+					exit (1);
+				}
+				if (ofd != 1) close (ofd); /* XXX No check */
+				ofd = fd;
+				continue;
 			case 'c':
 				if (i + 1 == argc) {
 					fprintf (stderr, "Missing arg for -s\n");
@@ -170,6 +185,7 @@ int main (int argc, char **argv) {
 		process (&IO);
 		flushbuf ();
 	}
+	if (ofd != 1) close (ofd); /* XXX No check */
 	return 0;
 }
 
