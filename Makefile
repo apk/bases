@@ -25,3 +25,9 @@ all :: $(BINDIR)/bin2hex
 $(BINDIR)/bin2hex : bin2hex.c common.c
 	mkdir -p $(BINDIR)
 	gcc -o $(BINDIR)/bin2hex bin2hex.c
+
+all :: $(BINDIR)/inv94
+
+$(BINDIR)/inv94 : inv94.c common.c
+	mkdir -p $(BINDIR)
+	gcc -o $(BINDIR)/inv94 inv94.c
