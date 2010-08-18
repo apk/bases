@@ -109,6 +109,19 @@ int main (int argc, char **argv) {
 				char *h;
 				struct iop IO;
 				int fd;
+			case 'C':
+				if (i + 1 == argc) {
+					fprintf (stderr, "Missing arg for -C\n");
+					exit (1);
+				}
+				/* String */
+				h = argv [++ i];
+				if (chdir (h) != 0) {
+					fprintf (stderr, "Cannot chdir to %s\n",
+						 h);
+					exit (1);
+				}
+				continue;
 			case 'f':
 				if (i + 1 == argc) {
 					fprintf (stderr, "Missing arg for -f\n");
