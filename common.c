@@ -1,6 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* This is seriously poor-man's-linker stuff. You include common.c first,
+ * but after defining the preprocessor symbols below that you need. Then
+ * you just write a process function that does the actual stream processing.
+ */
+
+#ifdef OPTS
+static char *opts (char *opt);
+#endif
+
+#ifdef OPT_LAZY
+static int lazy = 0;
+#endif
+
+#ifdef INIT
+static void init (void);
+#endif
+
 struct iop {
 	int fd;
 	char *ifn;
@@ -64,19 +81,7 @@ int readbuf (struct iop *io) {
 	return *io->ibuf ++;
 }
 
-#ifdef OPTS
-static char *opts (char *opt);
-#endif
-
-#ifdef OPT_LAZY
-static int lazy = 0;
-#endif
-
 void process (struct iop *io);
-
-#ifdef INIT
-static void init (void);
-#endif
 
 int main (int argc, char **argv) {
 	static char dummy [] = "<stdin>";
