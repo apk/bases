@@ -74,11 +74,18 @@ static int lazy = 0;
 
 void process (struct iop *io);
 
+#ifdef INIT
+static void init (void);
+#endif
+
 int main (int argc, char **argv) {
 	static char dummy [] = "<stdin>";
 	int donesome = 0;
 	int donestdin = 0;
 	int i;
+#ifdef INIT
+	init ();
+#endif
 	for (i = 1; i < argc; i ++) {
 		char *p;
 		char *arg = argv [i];
