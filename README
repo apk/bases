@@ -1,1 +1,14 @@
 This is an exercise of doing strange and new methods of encoding some binary as ascii.
+
+carray - produce a C array body (just the ... of 'char name [] = { ... };}'
+
+e64 - encode in base64
+
+hex2bin - take hex characters and convert to byte stream
+
+bin2hex - take byte stream and output as (pure) hex dump
+
+inv94 - replace printable ascii chars by the characater the same distance
+ from the other end of the printable range, so ! becomes ~ and vice versa.
+
+rot13 - you know that
