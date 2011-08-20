@@ -2,6 +2,12 @@
 BINDIR=.bin
 all ::
 
+all :: $(BINDIR)/d64
+
+$(BINDIR)/d64 : d64.c common.c code64.c
+	mkdir -p $(BINDIR)
+	gcc -o $(BINDIR)/d64 d64.c
+
 all :: $(BINDIR)/e64
 
 $(BINDIR)/e64 : e64.c common.c code64.c

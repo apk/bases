@@ -4,6 +4,8 @@ carray - produce a C array body (just the ... of 'char name [] = { ... };}'.
 
 e64 - encode byte stream in base64. When using multiple inputs output isn't well formed.
 
+d64 - decode base64 code into byte stream.
+
 hex2bin - take hex characters and convert to byte stream. Requires only hex character in pairs and white space in input. With -r it ignores other characters.
 
 bin2hex - take byte stream and output as (pure) hex dump.
