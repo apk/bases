@@ -19,6 +19,7 @@ int ofill = 0;
 #define PUTC(io,c) (ofill < sizeof (obuffer) ? obuffer [ofill ++] = (c) \
 		    : writebuf (c))
 #define FLUSH(io) (flushbuf ())
+#define PUTS(io,s) putl(io,s)
 
 void flushbuf () {
 	int p = 0;
@@ -36,6 +37,13 @@ void flushbuf () {
 void writebuf (int c) {
 	flushbuf ();
 	obuffer [ofill ++] = c;
+}
+
+void putl (struct iop *io, char *s) {
+	while (*s) {
+		PUTC (io, *s);
+		s ++;
+	}
 }
 
 int readbuf (struct iop *io) {
