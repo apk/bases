@@ -7,11 +7,13 @@ progs="e64 rot13 hex2bin bin2hex inv94 carray"
     echo 'BINDIR=.bin'
     echo "all ::"
     for i in $progs; do
+	deps="`sed -ne 's:^.*#include "\([a-z][a-z0-9.]*\)".*$:\1:p' $i.c`"
+	deps=`echo $deps`
 cat <<EOF
 
 all :: \$(BINDIR)/$i
 
-\$(BINDIR)/$i : $i.c common.c
+\$(BINDIR)/$i : $i.c $deps
 	mkdir -p \$(BINDIR)
 	gcc -o \$(BINDIR)/$i $i.c
 EOF
