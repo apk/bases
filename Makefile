@@ -31,3 +31,9 @@ all :: $(BINDIR)/inv94
 $(BINDIR)/inv94 : inv94.c common.c
 	mkdir -p $(BINDIR)
 	gcc -o $(BINDIR)/inv94 inv94.c
+
+all :: $(BINDIR)/carray
+
+$(BINDIR)/carray : carray.c common.c
+	mkdir -p $(BINDIR)
+	gcc -o $(BINDIR)/carray carray.c
