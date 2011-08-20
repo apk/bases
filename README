@@ -27,3 +27,6 @@ Common options:
 
 If no input is mentioned an implicit - is added to the arguments;
 thus a no-argument invocation works as pipe.
+
+Installation: Just run 'make BINDIR=/where/i/want/it/bin'. May need CC=cc,
+otherwise there isn't anything system-specific I know of. No autoconf.
