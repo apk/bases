@@ -1,9 +1,6 @@
 #include "common.c"
 
-static char b64code [64] =
-	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	"abcdefghijklmnopqrstuvwxyz"
-	"0123456789+/";
+#include "code64.c"
 
 static void out (struct iop *io, int c) {
 	PUTC (io, b64code [c & 63]);
