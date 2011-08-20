@@ -168,7 +168,7 @@ int main (int argc, char **argv) {
 				continue;
 			case 'c':
 				if (i + 1 == argc) {
-					fprintf (stderr, "Missing arg for -s\n");
+					fprintf (stderr, "Missing arg for -c\n");
 					exit (1);
 				}
 				/* String */
