@@ -15,6 +15,12 @@ $(BINDIR)/e64 : e64.c common.c code64.c
 	mkdir -p $(BINDIR)
 	$(CC) -o $(BINDIR)/e64 e64.c
 
+all :: $(BINDIR)/e85
+
+$(BINDIR)/e85 : e85.c common.c code85.c
+	mkdir -p $(BINDIR)
+	$(CC) -o $(BINDIR)/e85 e85.c
+
 all :: $(BINDIR)/rot13
 
 $(BINDIR)/rot13 : rot13.c common.c
