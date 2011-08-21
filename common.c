@@ -31,7 +31,7 @@ char obuffer [1 << 14];
 int ofill = 0;
 
 #define GETC(io) ((io) ? ((io)->ibuf < (io)->iend		      \
-			  ? *(io)->ibuf ++ : readbuf (io))	      \
+			  ? (*(io)->ibuf ++ & 255): readbuf (io))     \
 		  : getchar ())
 #define PUTC(io,c) (ofill < sizeof (obuffer) ? obuffer [ofill ++] = (c) \
 		    : writebuf (c))
@@ -78,7 +78,7 @@ int readbuf (struct iop *io) {
 		io->ibuf = io->ibuffer;
 		io->iend = io->ibuffer + r;
 	}
-	return *io->ibuf ++;
+	return (*io->ibuf ++ & 255);
 }
 
 void process (struct iop *io);
