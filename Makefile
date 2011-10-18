@@ -50,3 +50,9 @@ all :: $(BINDIR)/carray
 $(BINDIR)/carray : carray.c common.c
 	mkdir -p $(BINDIR)
 	$(CC) -o $(BINDIR)/carray carray.c
+
+all :: $(BINDIR)/slocat
+
+$(BINDIR)/slocat : slocat.c common.c
+	mkdir -p $(BINDIR)
+	$(CC) -o $(BINDIR)/slocat slocat.c

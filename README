@@ -17,6 +17,8 @@ inv94 - replace printable ascii chars by the characater the same distance
 
 rot13 - you know that.
 
+slocat - no conversion, delaying after each output char instead. Try 'vi | slocat'.
+
 Common options:
 
   -             use stdin as input
